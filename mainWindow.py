@@ -14,6 +14,14 @@ class MyApp(QMainWindow):
         super().__init__()
         self.initUI()
 
+    def run_pypresence(self, str):
+        client_id = '681631352722161693'
+        RPC = Presence(client_id)
+        RPC.connect()
+        startTime = datetime.datetime.today().timestamp()
+        RPC.update(details="pycharm64.exe", state="CustomGameActivity.py", large_image="discord",
+                   start=startTime)
+
     def initUI(self):
         '''Get Foreground Window process name
         w = win32gui
@@ -41,7 +49,7 @@ class MyApp(QMainWindow):
 
         #센트럴 위젯
         self.central = CentralWidget()
-        #self.central.signalTest.connect(self.receive_emit) #mainWidget의 signalTest의 시그널과 연결
+        self.central.okSignal.connect(self.receive_ok) #mainWidget의 signalTest의 시그널과 연결
         self.setCentralWidget(self.central)
 
         #윈도우 기본 셋
@@ -59,8 +67,8 @@ class MyApp(QMainWindow):
         self.move(qr.topLeft()) #현재 창을 qr의 위치로 실제로 이동시킴, 의미 : topLeft => 모니터의 좌상단을 기준으로
 
     #액션
-    def receive_emit(self):
-        self.statusBar().showMessage('receive')
+    def receive_ok(self):
+        self.run_pypresence()
         print("receive")
 
 if __name__ == '__main__':
