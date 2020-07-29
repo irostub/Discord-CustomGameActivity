@@ -41,19 +41,15 @@ class MyApp(QMainWindow):
 
         #센트럴 위젯
         self.central = CentralWidget()
-        self.central.signalTest.connect(self.receive_emit)
+        #self.central.signalTest.connect(self.receive_emit) #mainWidget의 signalTest의 시그널과 연결
         self.setCentralWidget(self.central)
 
         #윈도우 기본 셋
         self.setWindowTitle('Discord Custom GameActivity')
         self.setWindowIcon(QIcon('icon.png'))
-        self.resize(500, 800)
+        self.resize(400, 500)
         self.center()
         self.show()
-
-    def receive_emit(self):
-        self.statusBar().showMessage('receive')
-        print("receive")
 
     #화면 창을 가운데로 정렬
     def center(self):
@@ -62,7 +58,10 @@ class MyApp(QMainWindow):
         qr.moveCenter(cp) #qr에 담긴 프로그램 창의 중심정보를 화면의 중심으로 이동
         self.move(qr.topLeft()) #현재 창을 qr의 위치로 실제로 이동시킴, 의미 : topLeft => 모니터의 좌상단을 기준으로
 
-
+    #액션
+    def receive_emit(self):
+        self.statusBar().showMessage('receive')
+        print("receive")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
