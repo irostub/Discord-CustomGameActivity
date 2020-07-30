@@ -14,12 +14,12 @@ class MyApp(QMainWindow):
         super().__init__()
         self.initUI()
 
-    def run_pypresence(self, str):
+    def run_pypresence(self,arg1):
         client_id = '681631352722161693'
         RPC = Presence(client_id)
         RPC.connect()
         startTime = datetime.datetime.today().timestamp()
-        RPC.update(details="pycharm64.exe", state="CustomGameActivity.py", large_image="discord",
+        RPC.update(details=arg1, state="CustomGameActivity.py", large_image="discord",
                    start=startTime)
 
     def initUI(self):
@@ -67,8 +67,8 @@ class MyApp(QMainWindow):
         self.move(qr.topLeft()) #현재 창을 qr의 위치로 실제로 이동시킴, 의미 : topLeft => 모니터의 좌상단을 기준으로
 
     #액션
-    def receive_ok(self):
-        self.run_pypresence()
+    def receive_ok(self,a):
+        self.run_pypresence(a)
         print("receive")
 
 if __name__ == '__main__':
