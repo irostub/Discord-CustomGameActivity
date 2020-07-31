@@ -15,7 +15,7 @@ class MyApp(QMainWindow):
         self.initUI()
 
     def run_pypresence(self,arg1):
-        client_id = '681631352722161693'
+        client_id = 'client id' #get Discord Developer Portal
         RPC = Presence(client_id)
         RPC.connect()
         startTime = datetime.datetime.today().timestamp()
@@ -69,6 +69,7 @@ class MyApp(QMainWindow):
     #액션
     def receive_ok(self,a):
         self.run_pypresence(a)
+        print(a)
         print("receive")
 
 if __name__ == '__main__':
