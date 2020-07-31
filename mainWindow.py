@@ -15,7 +15,7 @@ class MyApp(QMainWindow):
         self.initUI()
 
     def run_pypresence(self,arg1):
-        client_id = '681631352722161693' #get Discord Developer Portal
+        client_id = 'ID' #get Discord Developer Portal
         RPC = Presence(client_id)
         RPC.connect()
         startTime = datetime.datetime.today().timestamp()
