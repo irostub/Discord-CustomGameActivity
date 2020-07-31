@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSignal
 
 class CentralWidget(QWidget):
     okSignal = pyqtSignal(str)
-
+    okSignal2 = pyqtSignal(str)
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -16,9 +16,10 @@ class CentralWidget(QWidget):
         contentOkButton = QPushButton('OK')
         statusOkButton = QPushButton('OK')
         self.contentLine = QLineEdit()
-        statusLine = QLineEdit()
+        self.statusLine = QLineEdit()
 
         contentOkButton.clicked.connect(self.contentOkEmit)
+        statusOkButton.clicked.connect(self.statusOkEmit)
 
         nowPlayBox = QHBoxLayout()
         nowPlayBox.addWidget(QLabel("~하는 중\t: "))
@@ -31,7 +32,7 @@ class CentralWidget(QWidget):
 
         statusBox = QHBoxLayout()
         statusBox.addWidget(QLabel("현재 상태\t: "))
-        statusBox.addWidget(statusLine)
+        statusBox.addWidget(self.statusLine)
         statusBox.addWidget(statusOkButton)
 
         vbox = QVBoxLayout()
@@ -49,3 +50,7 @@ class CentralWidget(QWidget):
     def contentOkEmit(self):
         k = self.contentLine.text()
         self.okSignal.emit(k)
+
+    def statusOkEmit(self):
+        k = self.statusLine.text()
+        self.okSignal2.emit(k)

@@ -15,7 +15,7 @@ class MyApp(QMainWindow):
         self.initUI()
 
     def run_pypresence(self,arg1):
-        client_id = 'client id' #get Discord Developer Portal
+        client_id = '681631352722161693' #get Discord Developer Portal
         RPC = Presence(client_id)
         RPC.connect()
         startTime = datetime.datetime.today().timestamp()
@@ -50,6 +50,7 @@ class MyApp(QMainWindow):
         #센트럴 위젯
         self.central = CentralWidget()
         self.central.okSignal.connect(self.receive_ok) #mainWidget의 signalTest의 시그널과 연결
+        self.central.okSignal2.connect(self.statusReceive_ok)
         self.setCentralWidget(self.central)
 
         #윈도우 기본 셋
@@ -71,6 +72,11 @@ class MyApp(QMainWindow):
         self.run_pypresence(a)
         print(a)
         print("receive")
+
+    def statusReceive_ok(self,a):
+        self.run_pypresence(a)
+        print(a)
+        print("receive2")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
