@@ -51,6 +51,7 @@ class MyApp(QMainWindow):
         self.central = CentralWidget()
         self.central.okSignal.connect(self.receive_ok) #mainWidget의 signalTest의 시그널과 연결
         self.central.okSignal2.connect(self.statusReceive_ok)
+        self.central.okSignal3.connect(self.nowReceive_ok)
         self.setCentralWidget(self.central)
 
         #윈도우 기본 셋
@@ -78,6 +79,9 @@ class MyApp(QMainWindow):
         print(a)
         print("receive2")
 
+    def nowReceive_ok(self):
+        self.run_pypresence("receive3")
+        print("receive3")
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyApp()
