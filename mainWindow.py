@@ -1,5 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QTextEdit, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLineEdit, QGridLayout, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QTextEdit, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel
+from PyQt5.QtCore import Qt, QMargins
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
 import datetime
@@ -50,19 +51,36 @@ class MyApp(QMainWindow):
         central = QWidget()
         contentLine = QLineEdit()
         statusLine = QLineEdit()
-        nowButton = QPushButton('OK')
-        nowButton2 = QPushButton('OK')
-        contentButton = QPushButton('OK')
-        statusButton = QPushButton('OK')
+        imageLine = QLineEdit()
+        okButton = QPushButton("적용")
+        doingButton = QPushButton("설정하기")
+
+        label0 = QLabel("~하는 중 :")
+        label0.setAlignment(Qt.AlignCenter)
+        label1 = QLabel("내용 : ")
+        label1.setAlignment(Qt.AlignCenter)
+        label2 = QLabel("상태 : ")
+        label2.setAlignment(Qt.AlignCenter)
+        label3 = QLabel("이미지 : ")
+        label3.setAlignment(Qt.AlignCenter)
 
         grid = QGridLayout()
+        grid.setContentsMargins(50, 50, 50, 50)
 
-        grid.addWidget(nowButton, 0, 0)
-        grid.addWidget(contentButton, 0, 1)
-        grid.addWidget(contentLine, 1, 0, 1, 2) #4,5 -> colspan, rowspan
+        grid.addWidget(label0, 0, 0)
+        grid.addWidget(doingButton, 0, 1)
+        grid.addWidget(label1, 1, 0)
+        grid.addWidget(contentLine, 1, 1)
+        grid.addWidget(label2, 2, 0)
+        grid.addWidget(statusLine, 2, 1)
+        grid.addWidget(label3, 3, 0)
+        grid.addWidget(imageLine, 3, 1)
+        grid.addWidget(okButton, 4, 0, 1, 2)
 
-        grid.setColumnStretch(0, 1)
-        grid.setColumnStretch(1, 2)
+
+
+        #grid.setColumnStretch(0, 2)
+        #grid.setColumnStretch(1, 2)
 
         central.setLayout(grid)
         self.setCentralWidget(central)
@@ -70,7 +88,7 @@ class MyApp(QMainWindow):
         #윈도우 기본 셋
         self.setWindowTitle('Discord Custom GameActivity')
         self.setWindowIcon(QIcon('icon.png'))
-        self.resize(400, 500)
+        self.resize(400, 300)
         self.center()
         self.show()
 
