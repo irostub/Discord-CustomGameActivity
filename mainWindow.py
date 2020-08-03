@@ -1,7 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QTextEdit, QWidget, QPushButton, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QTextEdit, QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLineEdit, QGridLayout, QSizePolicy
 from PyQt5.QtGui import QIcon
-from mainWidget import CentralWidget
 from pypresence import Presence
 import datetime
 import win32gui
@@ -48,10 +47,25 @@ class MyApp(QMainWindow):
         filemenu.addAction(exitAction)
 
         #센트럴 위젯
-        self.central = CentralWidget()
-        self.central.okSignal.connect(self.receive_ok) #mainWidget의 signalTest의 시그널과 연결
-        self.central.okSignal2.connect(self.statusReceive_ok)
-        self.setCentralWidget(self.central)
+        central = QWidget()
+        contentLine = QLineEdit()
+        statusLine = QLineEdit()
+        nowButton = QPushButton('OK')
+        nowButton2 = QPushButton('OK')
+        contentButton = QPushButton('OK')
+        statusButton = QPushButton('OK')
+
+        grid = QGridLayout()
+
+        grid.addWidget(nowButton, 0, 0)
+        grid.addWidget(contentButton, 0, 1)
+        grid.addWidget(contentLine, 1, 0, 1, 2) #4,5 -> colspan, rowspan
+
+        grid.setColumnStretch(0, 1)
+        grid.setColumnStretch(1, 2)
+
+        central.setLayout(grid)
+        self.setCentralWidget(central)
 
         #윈도우 기본 셋
         self.setWindowTitle('Discord Custom GameActivity')
