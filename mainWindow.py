@@ -4,22 +4,24 @@ from PyQt5.QtCore import Qt, QMargins
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
 import datetime
+import webbrowser
 import win32gui
 import time
 import psutil
 import win32process
+
 
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
 
-    def run_pypresence(self,arg1):
-        client_id = 'ID' #get Discord Developer Portal
+    def run_pypresence(self, *args):
+        client_id = args[0] #get Discord Developer Portal
         RPC = Presence(client_id)
         RPC.connect()
         startTime = datetime.datetime.today().timestamp()
-        RPC.update(details=arg1, state="CustomGameActivity.py", large_image="discord",
+        RPC.update(details=args[1], state=args[2], large_image=args[3],
                    start=startTime)
 
     def initUI(self):
@@ -49,14 +51,15 @@ class MyApp(QMainWindow):
 
         #센트럴 위젯
         central = QWidget()
-        idLine = QLineEdit()
-        contentLine = QLineEdit()
-        statusLine = QLineEdit()
-        imageLine = QLineEdit()
-        okButton = QPushButton("적용")
-        doingButton = QPushButton("설정하기")
+        self.idLine = QLineEdit()
+        self.contentLine = QLineEdit()
+        self.statusLine = QLineEdit()
+        self.imageLine = QLineEdit()
+        self.okButton = QPushButton("적용")
+        self.doingButton = QPushButton("설정하기")
 
-        labelID = QLabel("Dev ID 설정 :")
+        labelID = QLabel("Client 설정 :")
+        labelID.setAlignment(Qt.AlignCenter)
         label0 = QLabel("~하는 중 :")
         label0.setAlignment(Qt.AlignCenter)
         label1 = QLabel("내용 : ")
@@ -70,18 +73,16 @@ class MyApp(QMainWindow):
         grid.setContentsMargins(50, 50, 50, 50)
 
         grid.addWidget(labelID, 0, 0)
-        grid.addWidget(idLine, 0, 1)
+        grid.addWidget(self.idLine, 0, 1)
         grid.addWidget(label0, 1, 0)
-        grid.addWidget(doingButton, 1, 1)
+        grid.addWidget(self.doingButton, 1, 1)
         grid.addWidget(label1, 2, 0)
-        grid.addWidget(contentLine, 2, 1)
+        grid.addWidget(self.contentLine, 2, 1)
         grid.addWidget(label2, 3, 0)
-        grid.addWidget(statusLine, 3, 1)
+        grid.addWidget(self.statusLine, 3, 1)
         grid.addWidget(label3, 4, 0)
-        grid.addWidget(imageLine, 4, 1)
-        grid.addWidget(okButton, 5, 0, 1, 2)
-
-
+        grid.addWidget(self.imageLine, 4, 1)
+        grid.addWidget(self.okButton, 5, 0, 1, 2)
 
         #grid.setColumnStretch(0, 2)
         #grid.setColumnStretch(1, 2)
@@ -96,6 +97,9 @@ class MyApp(QMainWindow):
         self.center()
         self.show()
 
+        #이벤트
+        self.doingButton.clicked.connect(self.onDoingButton)
+        self.okButton.clicked.connect(self.onOkButton)
     #화면 창을 가운데로 정렬
     def center(self):
         qr = self.frameGeometry() #get 창의 위치, 크기 정보를
@@ -104,15 +108,16 @@ class MyApp(QMainWindow):
         self.move(qr.topLeft()) #현재 창을 qr의 위치로 실제로 이동시킴, 의미 : topLeft => 모니터의 좌상단을 기준으로
 
     #액션
-    def receive_ok(self,a):
-        self.run_pypresence(a)
-        print(a)
-        print("receive")
+    def onDoingButton(self):
+        webbrowser.open("https://discord.com/developers/applications")
 
-    def statusReceive_ok(self,a):
-        self.run_pypresence(a)
-        print(a)
-        print("receive2")
+    def onOkButton(self):
+        id = self.idLine.text()
+        content = self.contentLine.text()
+        status = self.statusLine.text()
+        image = self.imageLine.text()
+        print(id, content, status, image)
+        self.run_pypresence(id,content,status,image)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
