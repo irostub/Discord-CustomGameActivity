@@ -49,12 +49,14 @@ class MyApp(QMainWindow):
 
         #센트럴 위젯
         central = QWidget()
+        idLine = QLineEdit()
         contentLine = QLineEdit()
         statusLine = QLineEdit()
         imageLine = QLineEdit()
         okButton = QPushButton("적용")
         doingButton = QPushButton("설정하기")
 
+        labelID = QLabel("Dev ID 설정 :")
         label0 = QLabel("~하는 중 :")
         label0.setAlignment(Qt.AlignCenter)
         label1 = QLabel("내용 : ")
@@ -67,15 +69,17 @@ class MyApp(QMainWindow):
         grid = QGridLayout()
         grid.setContentsMargins(50, 50, 50, 50)
 
-        grid.addWidget(label0, 0, 0)
-        grid.addWidget(doingButton, 0, 1)
-        grid.addWidget(label1, 1, 0)
-        grid.addWidget(contentLine, 1, 1)
-        grid.addWidget(label2, 2, 0)
-        grid.addWidget(statusLine, 2, 1)
-        grid.addWidget(label3, 3, 0)
-        grid.addWidget(imageLine, 3, 1)
-        grid.addWidget(okButton, 4, 0, 1, 2)
+        grid.addWidget(labelID, 0, 0)
+        grid.addWidget(idLine, 0, 1)
+        grid.addWidget(label0, 1, 0)
+        grid.addWidget(doingButton, 1, 1)
+        grid.addWidget(label1, 2, 0)
+        grid.addWidget(contentLine, 2, 1)
+        grid.addWidget(label2, 3, 0)
+        grid.addWidget(statusLine, 3, 1)
+        grid.addWidget(label3, 4, 0)
+        grid.addWidget(imageLine, 4, 1)
+        grid.addWidget(okButton, 5, 0, 1, 2)
 
 
 
