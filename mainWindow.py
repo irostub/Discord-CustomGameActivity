@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QTextEdit, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel
-from PyQt5.QtCore import Qt, QMargins
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
 import datetime
@@ -17,7 +17,21 @@ class MyApp(QMainWindow):
         self.initUI()
         self.pypSet = False
 
+    #pyqt 종료 이벤트 override 됨
+    def closeEvent(self, event):
+        if self.pypSet == True:
+            self.RPC.close()
+            print("RPC Close success")
+            print("close program")
+        else:
+            print("RPC is not set")
+            print("close program")
+            pass
+        print("exit")
+
     def run_pypresence(self, *args):
+        #pypresence 첫 실행 시
+        #pypresence 주어진 client_id로 연결하고 상태를 업데이트
         if self.pypSet == False:
             self.client_id = args[0] #get Discord Developer Portal
             self.RPC = Presence(self.client_id,pipe=0)
@@ -26,6 +40,7 @@ class MyApp(QMainWindow):
             startTime = datetime.datetime.today().timestamp()
             self.RPC.update(details=args[1], state=args[2], large_image=args[3],
                        start=startTime)
+        #pypresence 첫 실행이 아닐 시 연결에 변화 없이 내용 업데이트
         elif self.pypSet == True:
             startTime = datetime.datetime.today().timestamp()
             self.RPC.update(details=args[1], state=args[2], large_image=args[3],
@@ -34,12 +49,14 @@ class MyApp(QMainWindow):
 
 
     def initUI(self):
-        '''Get Foreground Window process name
+        #Get Foreground Window process name
         w = win32gui
         w.GetWindowText(w.GetForegroundWindow())
         pid = win32process.GetWindowThreadProcessId(w.GetForegroundWindow())
         print(psutil.Process(pid[-1]).name())
-        '''
+        #foreground 프로세스 변경 시 자동으로 사용자 상태가 현재 활성화 된 창을 표시할 수 있도록
+        #SetWinEventHook 를 사용하여 foreground프로세스가 변경될 때 이벤트를 받을 수 있어야야함
+
 
         #메뉴바 액션
         exitAction = QAction('Exit',self)
