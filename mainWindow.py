@@ -15,14 +15,23 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.initUI()
+        self.pypSet = False
 
     def run_pypresence(self, *args):
-        client_id = args[0] #get Discord Developer Portal
-        RPC = Presence(client_id)
-        RPC.connect()
-        startTime = datetime.datetime.today().timestamp()
-        RPC.update(details=args[1], state=args[2], large_image=args[3],
-                   start=startTime)
+        if self.pypSet == False:
+            self.client_id = args[0] #get Discord Developer Portal
+            self.RPC = Presence(self.client_id,pipe=0)
+            self.RPC.connect()
+            self.pypSet = True
+            startTime = datetime.datetime.today().timestamp()
+            self.RPC.update(details=args[1], state=args[2], large_image=args[3],
+                       start=startTime)
+        elif self.pypSet == True:
+            startTime = datetime.datetime.today().timestamp()
+            self.RPC.update(details=args[1], state=args[2], large_image=args[3],
+                       start=startTime)
+            print(args)
+
 
     def initUI(self):
         '''Get Foreground Window process name
