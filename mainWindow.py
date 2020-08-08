@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
@@ -9,6 +9,24 @@ import win32gui
 import time
 import psutil
 import win32process
+
+
+class AboutMe(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        pass
+
+
+class Help(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        pass
 
 
 class MyApp(QMainWindow):
@@ -59,21 +77,26 @@ class MyApp(QMainWindow):
 
 
         #메뉴바 액션
-        exitAction = QAction('Exit',self)
+        exitAction = QAction('종료',self)
         exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
+        exitAction.setStatusTip('프로그램 종료')
         exitAction.triggered.connect(qApp.quit)
+
+        aboutAction = QAction('제작자',self)
+        aboutAction.setStatusTip('제작자의 정보 : iro_bound')
+        #exitAction.triggered.connect()
 
         #스테이터스 바
         #첫번째 호출 시 statusbar 생성, 이후 호출시 상태바 객체 반환
         #showMessage(str) 로 상태 메세지 변경
-        self.statusBar().showMessage('Ready')
+        self.statusBar().showMessage('DCGA 준비됨')
 
         #메뉴 바
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False) #Mac OS sync
-        filemenu = menubar.addMenu('&Help')
+        filemenu = menubar.addMenu('&도움말')
         filemenu.addAction(exitAction)
+        filemenu.addAction(aboutAction)
 
         #센트럴 위젯
         central = QWidget()
