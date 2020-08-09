@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QScrollArea, QVBoxLayout,QDialog, QHBoxLayout
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
@@ -11,13 +11,12 @@ import psutil
 import win32process
 
 
-class AboutMe(QWidget):
+class AboutMe(QDialog):
     def __init__(self):
         super().__init__()
         self.initUI()
 
-    def initUI(self):
-        pass
+
 
 
 class Help(QWidget):
@@ -26,7 +25,18 @@ class Help(QWidget):
         self.initUI()
 
     def initUI(self):
-        pass
+        w = QWidget()
+        sl = QVBoxLayout()
+        for i in range (100):
+            sl.addWidget(QLabel('count %02d' %i))
+        w.setLayout(sl)
+        sc = QScrollArea()
+        sc.setWidgetResizable(True)
+        sc.setWidget(w)
+        layout = QHBoxLayout()
+        layout.addWidget(sc)
+        self.setLayout(layout)
+
 
 
 class MyApp(QMainWindow):
@@ -34,6 +44,7 @@ class MyApp(QMainWindow):
         super().__init__()
         self.initUI()
         self.pypSet = False
+        self.p = Help()
 
     #pyqt 종료 이벤트 override 됨
     def closeEvent(self, event):
@@ -159,6 +170,8 @@ class MyApp(QMainWindow):
     #액션
     def onDoingButton(self):
         webbrowser.open("https://discord.com/developers/applications")
+        self.p.show()
+
 
     def onOkButton(self):
         id = self.idLine.text()
