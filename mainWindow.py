@@ -16,18 +16,10 @@ class AboutMe(QDialog):
         super().__init__()
         self.initUI()
 
-
-
-
-class Help(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-
     def initUI(self):
         w = QWidget()
         sl = QVBoxLayout()
-        for i in range (100):
+        for i in range(100):
             sl.addWidget(QLabel('count %02d' %i))
         w.setLayout(sl)
         sc = QScrollArea()
@@ -37,6 +29,24 @@ class Help(QWidget):
         layout.addWidget(sc)
         self.setLayout(layout)
 
+
+class Help(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        scrollwidget = QWidget() #스크롤 시킬 위젯
+        scrolllayout = QVBoxLayout() #스크롤 시킬 위젯의 레이아웃
+        scrollwidget.setLayout(scrolllayout)
+        for i in range(100):
+            scrolllayout.addWidget(QLabel('count %02d' %i))
+        scroll = QScrollArea() #스크롤 입힐 영역
+        scroll.setWidgetResizable(True) 
+        scroll.setWidget(scrollwidget) #누구를 스크롤 시킬지
+        layout = QHBoxLayout() #스크롤 시킬 위젯을 담을 박스
+        layout.addWidget(scroll) #스크롤 시킬 영역 전체를 담는다
+        self.setLayout(layout) #Help의 창에 적용
 
 
 class MyApp(QMainWindow):
