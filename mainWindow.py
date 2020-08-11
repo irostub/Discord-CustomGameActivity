@@ -1,3 +1,4 @@
+import os.path
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QScrollArea, QVBoxLayout,QDialog, QHBoxLayout, QSizePolicy, QMessageBox
 from PyQt5.QtCore import Qt
@@ -9,7 +10,7 @@ import win32gui
 import time
 import psutil
 import win32process
-
+import json
 
 class AboutMe(QDialog):
     def __init__(self):
@@ -17,14 +18,17 @@ class AboutMe(QDialog):
         self.initUI()
 
     def initUI(self):
-        w = QWidget()
+        scrollWidget = QWidget()
+        scrollLayout = QVBoxLayout()
+        scrollWidget.setLayout(scrollLayout)
         sl = QVBoxLayout()
+
         for i in range(100):
             sl.addWidget(QLabel('count %02d' %i))
-        w.setLayout(sl)
+        scrollWidget.setLayout(sl)
         sc = QScrollArea()
         sc.setWidgetResizable(True)
-        sc.setWidget(w)
+        sc.setWidget(scrollWidget)
         layout = QHBoxLayout()
         layout.addWidget(sc)
         self.setLayout(layout)
@@ -60,6 +64,14 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         print("ready MainWindow")
+        loadContent = './config.json'
+        if os.path.isfile(loadContent):
+            print("file enter")
+            with open("config.json", "r") as f:
+                readfile = json.load(f)
+                print(readfile)
+        else:
+            print("file not in here")
         self.initUI()
         self.pypSet = False
         self.p = Help()
@@ -70,11 +82,19 @@ class MyApp(QMainWindow):
             self.RPC.close()
             print("RPC Close success")
             print("close program")
+
         else:
             print("RPC is not set")
             print("close program")
+            print("check line empty:" + str(self.checkEmptyLine()))
+            if self.checkEmptyLine() == False:
+                pass
+            else:
+                writeContent = [self.idLine.text(), self.contentLine.text(), self.statusLine.text(), self.imageLine.text()]
+                with open("config.json", "w") as json_file:
+                    json.dump(writeContent, json_file)
+                    print(writeContent)
             self.p.close() #메인창을 꺼도 help widget이 닫히지 않으므로 직접 제거
-            pass
         print("exit")
 
     def run_pypresence(self, *args):
@@ -210,6 +230,14 @@ class MyApp(QMainWindow):
             x = QMessageBox.question(self, '경고', '뭔가 입력을 빼먹으셨네요', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         else:
             self.run_pypresence(id, content, status, image)
+
+    def checkEmptyLine(self):
+        check = False
+        if self.idLine.text() == "" or self.contentLine.text() == "" or self.statusLine.text() == "" or self.imageLine.text() == "":
+            check = False
+        else:
+            check = True
+        return check
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
