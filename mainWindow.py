@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QScrollArea, QVBoxLayout,QDialog, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QScrollArea, QVBoxLayout,QDialog, QHBoxLayout, QSizePolicy, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
@@ -33,14 +33,21 @@ class AboutMe(QDialog):
 class Help(QWidget):
     def __init__(self):
         super().__init__()
+        print("ready Help Widget")
         self.initUI()
+
 
     def initUI(self):
         scrollwidget = QWidget() #스크롤 시킬 위젯
         scrolllayout = QVBoxLayout() #스크롤 시킬 위젯의 레이아웃
         scrollwidget.setLayout(scrolllayout)
-        for i in range(100):
-            scrolllayout.addWidget(QLabel('count %02d' %i))
+        scrolllayout.addWidget(QLabel("1-1. discord developer 사이트에서 애플리케이션을 생성"))
+        scrolllayout.addWidget(QLabel("1-2. 생성한 애플리케이션의 이름이 디스코드에서 ~~하는 중으로 표시됨"))
+        scrolllayout.addWidget(QLabel("2. 생성한 애플리케이션의 Client ID를 프로그램의 Client 설정에 입력"))
+        scrolllayout.addWidget(QLabel("3. 표시하기 원하는 내용과 상태를 작성"))
+        scrolllayout.addWidget(QLabel("4. 표시하기 원하는 사진을 Discord developer 사이트의 Rich presence에 업로드 후 업로드한 이름을 입력"))
+        #gif 나 사진으로 대채할 것
+
         scroll = QScrollArea() #스크롤 입힐 영역
         scroll.setWidgetResizable(True) 
         scroll.setWidget(scrollwidget) #누구를 스크롤 시킬지
@@ -52,6 +59,7 @@ class Help(QWidget):
 class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
+        print("ready MainWindow")
         self.initUI()
         self.pypSet = False
         self.p = Help()
@@ -65,10 +73,12 @@ class MyApp(QMainWindow):
         else:
             print("RPC is not set")
             print("close program")
+            self.p.close() #메인창을 꺼도 help widget이 닫히지 않으므로 직접 제거
             pass
         print("exit")
 
     def run_pypresence(self, *args):
+        print("enter run_pypresence")
         #pypresence 첫 실행 시
         #pypresence 주어진 client_id로 연결하고 상태를 업데이트
         if self.pypSet == False:
@@ -122,10 +132,15 @@ class MyApp(QMainWindow):
         #센트럴 위젯
         central = QWidget()
         self.idLine = QLineEdit()
+        self.idLine.setPlaceholderText("Client ID를 입력")
         self.contentLine = QLineEdit()
+        self.contentLine.setPlaceholderText("원하는 내용을 입력")
         self.statusLine = QLineEdit()
+        self.statusLine.setPlaceholderText("원하는 상태를 입력")
         self.imageLine = QLineEdit()
+        self.imageLine.setPlaceholderText("이미지 이름")
         self.okButton = QPushButton("적용")
+        self.okButton.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.doingButton = QPushButton("설정하기")
 
         labelID = QLabel("Client 설정 :")
@@ -140,7 +155,7 @@ class MyApp(QMainWindow):
         label3.setAlignment(Qt.AlignCenter)
 
         grid = QGridLayout()
-        grid.setContentsMargins(50, 50, 50, 50)
+        grid.setContentsMargins(59,50,50,50)
 
         grid.addWidget(labelID, 0, 0)
         grid.addWidget(self.idLine, 0, 1)
@@ -189,7 +204,12 @@ class MyApp(QMainWindow):
         status = self.statusLine.text()
         image = self.imageLine.text()
         print(id, content, status, image)
-        self.run_pypresence(id,content,status,image)
+
+        if id == "" or content == "" or status == "" or image == "":
+            print("일로왔는데요?")
+            x = QMessageBox.question(self, '경고', '뭔가 입력을 빼먹으셨네요', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        else:
+            self.run_pypresence(id, content, status, image)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
