@@ -64,17 +64,21 @@ class MyApp(QMainWindow):
     def __init__(self):
         super().__init__()
         print("ready MainWindow")
+        self.initUI()
+        self.pypSet = False
+        self.p = Help()
         loadContent = './config.json'
         if os.path.isfile(loadContent):
             print("file enter")
             with open("config.json", "r") as f:
                 readfile = json.load(f)
+                self.idLine.setText(readfile[0])
+                self.contentLine.setText(readfile[1])
+                self.statusLine.setText(readfile[2])
+                self.imageLine.setText(readfile[3])
                 print(readfile)
         else:
             print("file not in here")
-        self.initUI()
-        self.pypSet = False
-        self.p = Help()
 
     #pyqt 종료 이벤트 override 됨
     def closeEvent(self, event):
@@ -225,9 +229,9 @@ class MyApp(QMainWindow):
         image = self.imageLine.text()
         print(id, content, status, image)
 
-        if id == "" or content == "" or status == "" or image == "":
+        if self.checkEmptyLine():
             print("일로왔는데요?")
-            x = QMessageBox.question(self, '경고', '뭔가 입력을 빼먹으셨네요', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            x = QMessageBox.question(self, '경고', '입력 항목을 다시 확인해주세요', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         else:
             self.run_pypresence(id, content, status, image)
 
