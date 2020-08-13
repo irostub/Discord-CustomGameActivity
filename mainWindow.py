@@ -1,6 +1,7 @@
 import os.path
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, QScrollArea, QVBoxLayout,QDialog, QHBoxLayout, QSizePolicy, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QAction, qApp, QDesktopWidget, QWidget, QPushButton, QLineEdit, QGridLayout, QLabel, \
+    QScrollArea, QVBoxLayout,QDialog, QHBoxLayout, QSizePolicy, QMessageBox, QSystemTrayIcon, QMenu
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from pypresence import Presence
@@ -91,7 +92,7 @@ class MyApp(QMainWindow):
             print("RPC is not set")
             print("close program")
             print("check line empty:" + str(self.checkEmptyLine()))
-            if self.checkEmptyLine() == False:
+            if self.checkEmptyLine():
                 pass
             else:
                 writeContent = [self.idLine.text(), self.contentLine.text(), self.statusLine.text(), self.imageLine.text()]
@@ -145,16 +146,27 @@ class MyApp(QMainWindow):
         #첫번째 호출 시 statusbar 생성, 이후 호출시 상태바 객체 반환
         #showMessage(str) 로 상태 메세지 변경
         self.statusBar().showMessage('DCGA 준비됨')
-
+        #self.statusBar().hide() #hide status bar
         #메뉴 바
+        tray = QSystemTrayIcon(QIcon('whatsapp.png'),parent=self)
+        tray.setToolTip("check out this app on tray icon")
+        tray.setVisible(True)
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False) #Mac OS sync
-        filemenu = menubar.addMenu('&도움말')
+        menu = QMenu('&도움말')
+        menu2 = QMenu("what")
+        exitact = menu2.addAction('종료')
+        exitact.triggered.connect(qApp.quit)
+        filemenu = menu
+        tray.setContextMenu(menu2)
         filemenu.addAction(exitAction)
         filemenu.addAction(aboutAction)
+        menubar.addMenu(menu2)
 
         #센트럴 위젯
         central = QWidget()
+        #central.setStyleSheet("background-color:#333333; border-style:solid; border-width: 1px; border-color: #555555; border-radius: 4px;")
+
         self.idLine = QLineEdit()
         self.idLine.setPlaceholderText("Client ID를 입력")
         self.contentLine = QLineEdit()
@@ -203,8 +215,12 @@ class MyApp(QMainWindow):
         self.setWindowTitle('Discord Custom GameActivity')
         self.setWindowIcon(QIcon('icon.png'))
         self.resize(400, 300)
+
+        #self.setWindowFlags(Qt.FramelessWindowHint) #window frame hide
+        #self.setAttribute(Qt.WA_TranslucentBackground) #remove border top side grabage
         self.center()
         self.show()
+        #self.setStyleSheet("background-color: #333333;") #self -> style css type
 
         #이벤트
         self.doingButton.clicked.connect(self.onDoingButton)
@@ -230,20 +246,24 @@ class MyApp(QMainWindow):
         print(id, content, status, image)
 
         if self.checkEmptyLine():
-            print("일로왔는데요?")
+            print("Enter onOkButton event -> checkEmptyLine False Enter here")
             x = QMessageBox.question(self, '경고', '입력 항목을 다시 확인해주세요', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         else:
             self.run_pypresence(id, content, status, image)
 
     def checkEmptyLine(self):
-        check = False
+        check = True
         if self.idLine.text() == "" or self.contentLine.text() == "" or self.statusLine.text() == "" or self.imageLine.text() == "":
-            check = False
-        else:
             check = True
+        else:
+            check = False
         return check
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyApp()
     sys.exit(app.exec_())
+    
+    
+##TODO:https://doc.qt.io/qt-5/qtwidgets-desktop-systray-example.html 트레이 아이콘을 만들고 종료 시 트레이로 보내는 방법
