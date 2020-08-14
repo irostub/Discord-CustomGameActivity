@@ -66,60 +66,38 @@ class MyApp(QMainWindow):
         super().__init__()
         print("ready MainWindow")
         self.initUI()
-        self.pypSet = False
+        self.is_pypresence_client_set = False
         self.p = Help()
-        loadContent = './config.json'
-        if os.path.isfile(loadContent):
-            print("file enter")
-            with open("config.json", "r") as f:
-                readfile = json.load(f)
-                self.idLine.setText(readfile[0])
-                self.contentLine.setText(readfile[1])
-                self.statusLine.setText(readfile[2])
-                self.imageLine.setText(readfile[3])
-                print(readfile)
-        else:
-            print("file not in here")
+        self.loadFile()
 
     #pyqt 종료 이벤트 override 됨
     def closeEvent(self, event):
-        if self.pypSet == True:
+        if self.is_pypresence_client_set:
             self.RPC.close()
-            print("RPC Close success")
-            print("close program")
-
+            print("RPC setup done, close event done")
         else:
-            print("RPC is not set")
-            print("close program")
+            print("RPC setup not done, close event done")
             print("check line empty:" + str(self.checkEmptyLine()))
-            if self.checkEmptyLine():
-                pass
-            else:
-                writeContent = [self.idLine.text(), self.contentLine.text(), self.statusLine.text(), self.imageLine.text()]
-                with open("config.json", "w") as json_file:
-                    json.dump(writeContent, json_file)
-                    print(writeContent)
-            self.p.close() #메인창을 꺼도 help widget이 닫히지 않으므로 직접 제거
-        print("exit")
+        self.saveFile()
+        self.p.close()
 
     def run_pypresence(self, *args):
-        print("enter run_pypresence")
+        print("run pypresence : " + str(args))
         #pypresence 첫 실행 시
         #pypresence 주어진 client_id로 연결하고 상태를 업데이트
-        if self.pypSet == False:
+        if self.is_pypresence_client_set:
             self.client_id = args[0] #get Discord Developer Portal
             self.RPC = Presence(self.client_id,pipe=0)
             self.RPC.connect()
-            self.pypSet = True
+            self.is_pypresence_client_set = True
             startTime = datetime.datetime.today().timestamp()
             self.RPC.update(details=args[1], state=args[2], large_image=args[3],
                        start=startTime)
         #pypresence 첫 실행이 아닐 시 연결에 변화 없이 내용 업데이트
-        elif self.pypSet == True:
+        elif self.is_pypresence_client_set:
             startTime = datetime.datetime.today().timestamp()
             self.RPC.update(details=args[1], state=args[2], large_image=args[3],
                        start=startTime)
-            print(args)
 
 
     def initUI(self):
@@ -146,22 +124,21 @@ class MyApp(QMainWindow):
         #첫번째 호출 시 statusbar 생성, 이후 호출시 상태바 객체 반환
         #showMessage(str) 로 상태 메세지 변경
         self.statusBar().showMessage('DCGA 준비됨')
-        #self.statusBar().hide() #hide status bar
+
+
         #메뉴 바
-        tray = QSystemTrayIcon(QIcon('whatsapp.png'),parent=self)
-        tray.setToolTip("check out this app on tray icon")
-        tray.setVisible(True)
+        #--self.tray icon--
+        self.tray = QSystemTrayIcon(QIcon('whatsapp.png'),parent=self)
+        self.tray.setToolTip("check out this app on self.tray icon")
+        self.tray.setVisible(True)
         menubar = self.menuBar()
         menubar.setNativeMenuBar(False) #Mac OS sync
         menu = QMenu('&도움말')
-        menu2 = QMenu("what")
-        exitact = menu2.addAction('종료')
-        exitact.triggered.connect(qApp.quit)
         filemenu = menu
-        tray.setContextMenu(menu2)
+        self.tray.setContextMenu(menu)
         filemenu.addAction(exitAction)
         filemenu.addAction(aboutAction)
-        menubar.addMenu(menu2)
+        menubar.addMenu(menu)
 
         #센트럴 위젯
         central = QWidget()
@@ -205,6 +182,10 @@ class MyApp(QMainWindow):
         grid.addWidget(self.imageLine, 4, 1)
         grid.addWidget(self.okButton, 5, 0, 1, 2)
 
+        temp = QPushButton("temp")
+        grid.addWidget(temp,6,0,1,2)
+        temp.clicked.connect(self.temms)
+
         #grid.setColumnStretch(0, 2)
         #grid.setColumnStretch(1, 2)
 
@@ -225,6 +206,7 @@ class MyApp(QMainWindow):
         #이벤트
         self.doingButton.clicked.connect(self.onDoingButton)
         self.okButton.clicked.connect(self.onOkButton)
+        #self.tray.activated(self.self.trayActiviy(self.tray))
     #화면 창을 가운데로 정렬
     def center(self):
         qr = self.frameGeometry() #get 창의 위치, 크기 정보를
@@ -259,11 +241,39 @@ class MyApp(QMainWindow):
             check = False
         return check
 
+    def loadFile(self):
+        loadContent = './config.json'
+        if os.path.isfile(loadContent):
+            with open("config.json", "r") as f:
+                readfile = json.load(f)
+                self.idLine.setText(readfile[0])
+                self.contentLine.setText(readfile[1])
+                self.statusLine.setText(readfile[2])
+                self.imageLine.setText(readfile[3])
+                print("file load success")
+                print(readfile)
+        else:
+            print("file load fail")
+
+    def saveFile(self):
+        if self.checkEmptyLine():
+            print("file save file. check line edit is empty line.")
+        else:
+            writeContent = [self.idLine.text(), self.contentLine.text(), self.statusLine.text(), self.imageLine.text()]
+            with open("config.json", "w") as json_file:
+                json.dump(writeContent, json_file)
+                print("file save success")
+                print(writeContent)
+
+    def temms(self):
+        if self.tray.isVisible():
+            self.tray.setVisible(False)
+        elif not self.tray.isVisible():
+            self.tray.setVisible(True)
+        else:
+            print("error")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyApp()
     sys.exit(app.exec_())
-    
-    
-##TODO:https://doc.qt.io/qt-5/qtwidgets-desktop-systray-example.html 트레이 아이콘을 만들고 종료 시 트레이로 보내는 방법
