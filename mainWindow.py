@@ -85,7 +85,7 @@ class MyApp(QMainWindow):
         print("run pypresence : " + str(args))
         #pypresence 첫 실행 시
         #pypresence 주어진 client_id로 연결하고 상태를 업데이트
-        if self.is_pypresence_client_set:
+        if not self.is_pypresence_client_set:
             self.client_id = args[0] #get Discord Developer Portal
             self.RPC = Presence(self.client_id,pipe=0)
             self.RPC.connect()
@@ -128,7 +128,7 @@ class MyApp(QMainWindow):
 
         #메뉴 바
         #--self.tray icon--
-        self.tray = QSystemTrayIcon(QIcon('whatsapp.png'),parent=self)
+        self.tray = QSystemTrayIcon(QIcon('icon.png'),parent=self)
         self.tray.setToolTip("check out this app on self.tray icon")
         self.tray.setVisible(True)
         menubar = self.menuBar()
