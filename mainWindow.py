@@ -46,8 +46,9 @@ class Help(QWidget):
         scrollwidget = QWidget() #스크롤 시킬 위젯
         scrolllayout = QVBoxLayout() #스크롤 시킬 위젯의 레이아웃
         scrollwidget.setLayout(scrolllayout)
+        scrolllayout.addWidget(QLabel("1-0. 커스텀 상태 사용 방법"))
         scrolllayout.addWidget(QLabel("1-1. discord developer 사이트에서 애플리케이션을 생성"))
-        scrolllayout.addWidget(QLabel("1-2. 생성한 애플리케이션의 이름이 디스코드에서 ~~하는 중으로 표시됨"))
+        scrolllayout.addWidget(QLabel("1-2. 생성한 애플리케이션의 이름이 디스코드에서 ~~하는 중으로 표시됩니다"))
         scrolllayout.addWidget(QLabel("2. 생성한 애플리케이션의 Client ID를 프로그램의 Client 설정에 입력"))
         scrolllayout.addWidget(QLabel("3. 표시하기 원하는 내용과 상태를 작성"))
         scrolllayout.addWidget(QLabel("4. 표시하기 원하는 사진을 Discord developer 사이트의 Rich presence에 업로드 후 업로드한 이름을 입력"))
@@ -58,6 +59,9 @@ class Help(QWidget):
         scroll.setWidget(scrollwidget) #누구를 스크롤 시킬지
         layout = QHBoxLayout() #스크롤 시킬 위젯을 담을 박스
         layout.addWidget(scroll) #스크롤 시킬 영역 전체를 담는다
+        self.setWindowTitle("HelpMessage")
+        #self.resize(700,250)
+        self.setFixedSize(700,250)
         self.setLayout(layout) #Help의 창에 적용
 
 
